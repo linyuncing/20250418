@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>右上角選單</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+    /* 選單容器 */
+    .menu {
+      position: absolute;
+      top: 10px;
+      right: 100px; /* 距離視窗右邊框 100px */
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      gap: 30px; /* 選單間距 */
+      background-color: rgba(112, 214, 255, 0.2); /* 選單背景顏色，透明度 0.2 */
+      padding: 10px;
+      border-radius: 10px;
+      opacity: 0; /* 初始隱藏 */
+      transform: translateY(-20px); /* 初始位置向上移動 */
+      transition: opacity 0.5s ease, transform 0.5s ease; /* 過渡效果 */
+    }
+    .menu.show {
+      opacity: 1; /* 顯示選單 */
+      transform: translateY(0); /* 回到原始位置 */
+    }
+    /* 選單項目 */
+    .menu li {
+      position: relative;
+    }
+    /* 選單連結樣式 */
+    .menu a {
+      text-decoration: none;
+      color: #27187e; /* 選單文字顏色 */
+      font-size: 30px; /* 選單文字大小 */
+      font-family: "Microsoft JhengHei", sans-serif; /* 微軟正黑體 */
+      padding: 5px 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    /* 滑鼠懸停效果 */
+    .menu a:hover {
+      background-color: #efc3f5; /* 滑鼠移動到上面時的顏色 */
+      color: white;
+    }
+    /* 子選單樣式 */
+    .submenu {
+      display: none;
+      position: absolute;
+      top: 100%; /* 子選單顯示在主選單下方 */
+      left: 0;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      background-color: rgba(112, 214, 255, 0.2); /* 子選單背景顏色 */
+      border-radius: 5px;
+    }
+    .submenu li {
+      padding: 5px 10px;
+    }
+    .submenu a {
+      font-size: 20px; /* 子選單文字大小 */
+    }
+    /* 滑鼠懸停顯示子選單 */
+    .menu li:hover .submenu {
+      display: block;
+    }
+    /* iframe 樣式 */
+    iframe {
+      display: none; /* 預設隱藏 */
+      width: 50%; /* 寬度為視窗的三分之一 */
+      height: 50%; /* 高度為視窗的三分之一 */
+      border: none;
+      position: absolute;
+      top: 50%; /* 垂直置中 */
+      left: 50%; /* 水平置中 */
+      transform: translate(-50%, -50%); /* 將中心點移回視窗中心 */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 添加陰影效果 */
+      border-radius: 10px; /* 圓角邊框 */
+    }
+  </style>
+</head>
+<body>
+  <ul class="menu" id="menu">
+    <li><a href="#" onclick="hideIframe()">首頁</a></li>
+    <li><a href="#" onclick="showIframe('Pink Kawaii cute table cloth hand drawn organic scrapbook YouTube Intro.png')">自我介紹</a></li>
+    <li>
+      <a href="#">作品集</a>
+      <ul class="submenu">
+        <li><a href="#" onclick="showIframe('https://linyuncing.github.io/20250314/')">第一周</a></li>
+        <li><a href="#" onclick="showIframe('https://linyuncing.github.io/20250328/')">第二周</a></li>
+        <li><a href="#" onclick="showIframe('https:https://www.tku.edu.tw/')">第三周</a></li>
+        <li><a href="#" onclick="showIframe('https://www.et.tku.edu.tw/')">第四周</a></li>
+      </ul>
+    </li>
+    <li><a href="#"onclick="showIframe('https://linyuncing.github.io/20250321/')">測驗卷</a></li>
+    <li><a href="#" onclick="showIframe('https://cfchen58.synology.me/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%882024/A2/week1/20250221_092037.mp4')">教學影片</a></li>
+  </ul>
+  <iframe id="contentFrame"></iframe>
+  <script>
+    let circles = [];
+    const numCircles = 40;
+    const colors = ['#fde4cf', '#ffcfd2', '#f1c0e8', '#cfbaf0', '#a3c4f3', '#90dbf4', '#8eecf5', '#98f5e1', '#b9fbc0'];
+
+    function setup() {
+      createCanvas(windowWidth, windowHeight);
+      background('#fbf8cc');
+
+      // 初始化圓的位置、大小和顏色
+      for (let i = 0; i < numCircles; i++) {
+        circles.push({
+          x: random(width),
+          y: random(height),
+          size: random(30, 100),
+          color: random(colors)
+        });
+      }
+
+      // 每 0.5 秒更換一次顏色
+      setInterval(() => {
+        for (let circle of circles) {
+          circle.color = random(colors);
+        }
+      }, 500);
+    }
+
+    function draw() {
+      background('#fbf8cc');
+
+      // 根據滑鼠位置調整圓的大小
+      let sizeFactor = map(mouseX, 0, width, 10, 120);
+
+      for (let circle of circles) {
+        fill(circle.color);
+        noStroke();
+        ellipse(circle.x, circle.y, circle.size * sizeFactor / 100);
+      }
+    }
+
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
+    }
+
+    // 顯示 iframe 並載入指定的 URL 或圖片
+    function showIframe(url) {
+      const iframe = document.getElementById('contentFrame');
+      iframe.src = url;
+      iframe.style.display = 'block';
+    }
+
+    // 隱藏 iframe
+    function hideIframe() {
+      const iframe = document.getElementById('contentFrame');
+      iframe.style.display = 'none';
+      iframe.src = ''; // 清空 iframe 的內容
+    }
+
+    // 監聽滑鼠移動事件，控制選單顯示與隱藏
+    document.addEventListener('mousemove', (event) => {
+      const menu = document.getElementById('menu');
+      if (event.clientY < 250) {
+        menu.classList.add('show'); // 顯示選單
+      } else {
+        menu.classList.remove('show'); // 隱藏選單
+      }
+    });
+  </script>
+</body>
+</html>
